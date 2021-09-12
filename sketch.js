@@ -485,15 +485,15 @@ function draw()
     
     image(bagCoins,9500,floorPos_y-45);
     
-    if(flagpole.isReached)
-    {
-        debugger
-        elapsedTimesinceflag = millis() - flagReachedTime;
-        if(elapsedTimesinceflag < 5000 ){
-            textSize(40);
-            text('SALIM' , scrollPos + 100,200);
-        }
-    }
+    // if(flagpole.isReached)
+    // {
+    //     debugger
+    //     elapsedTimesinceflag = millis() - flagReachedTime;
+    //     if(elapsedTimesinceflag < 5000 ){
+    //         textSize(40);
+    //         text('SALIM' , scrollPos + 100,200);
+    //     }
+    // }
 
 
    
@@ -1174,7 +1174,7 @@ function createEnemy(x, y, range)
     {
         var d = dist(gc_x,gc_y,this.currentX,this.y)
         
-        if(d < 40) //20
+        if(d < 48) //20 //40
             {
                 return true;
             }
