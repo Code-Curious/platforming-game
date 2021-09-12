@@ -40,6 +40,10 @@ var fadeAmount = 1;
 let speed = 1; 
 let ts = 50;
 ///////////
+var startTime;
+var elapsedTime;
+var elapsedTimesinceflag;
+var flagReachedTime;
 
 var jumpSound;
 var collecteSound; 
@@ -104,15 +108,15 @@ function setup()
     startGame(); 
 }
 
-function textLevel()
-{
+// function textLevel()
+// {
 
-        fill(255,255,0);
-        noStroke();
-        textSize(40);
-        text('LEVEL 1 COMPLETED');
+//         fill(255,255,0);
+//         noStroke();
+//         textSize(40);
+//         text('LEVEL 1 COMPLETED');
 
-}
+// }
 
 
 function startGame()
@@ -388,6 +392,8 @@ function startGame()
     enemies.push(new createEnemy(8700,floorPos_y-30,150)); 
 
     game_score = 0;
+
+    startTime = millis();
     
     //add an end to the level
     flagpole = {isReached: false, x_pos: 5200}; 
@@ -429,6 +435,7 @@ function draw()
              drawCanyon(canyons[i]); 
       
     }
+
     drawSun();
 	// draw clouds
     drawClouds();
@@ -478,6 +485,19 @@ function draw()
     
     image(bagCoins,9500,floorPos_y-45);
     
+    if(flagpole.isReached)
+    {
+        debugger
+        elapsedTimesinceflag = millis() - flagReachedTime;
+        if(elapsedTimesinceflag < 5000 ){
+            textSize(40);
+            text('SALIM' , scrollPos + 100,200);
+        }
+    }
+
+
+   
+
     renderFlagpole();
     checkPlayerDie();
     
@@ -1039,7 +1059,10 @@ function checkFlagpole()
     var d = abs(gameChar_world_x - flagpole.x_pos);   
     if( d < 4) //15 //9
       {
+        
         flagpole.isReached = true;
+        flagReachedTime = millis();
+
         //backgroundSound.pause();
         levelSound.playMode('restart');
         levelSound.play();
