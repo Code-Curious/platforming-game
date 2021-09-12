@@ -36,7 +36,7 @@ var flagpole;
 var lives; 
 var level;
 
-var startTime;
+var firstGameStartTime;
 var elapsedTime;
 var elapsedTimesinceflag;
 var flagReachedTime;
@@ -47,6 +47,7 @@ var failureSound;
 var gameoverSound;
 var levelSound;
 var backgroundSound;
+var isFirstGameStart = true;
 
 
 function preload()
@@ -92,7 +93,7 @@ function sceneSound()
 // game instructions 
 function gameInstructions()
 {
-    elapsedTime = millis() - startTime;
+    elapsedTime = millis() - firstGameStartTime;
     if(elapsedTime < 3000 )
     {  
         noStroke();
@@ -378,10 +379,13 @@ function startGame()
     enemies.push(new createEnemy(8700,floorPos_y-30,150)); 
 
     game_score = 0;
-    startTime = millis();  
+    if (isFirstGameStart) {
+        firstGameStartTime = millis();  
+        
+    }
     //add an end to the level
     flagpole = {isReached: false, x_pos: 5200}; 
-
+    isFirstGameStart = false;
     gameOver(); 
 }
 
