@@ -20,6 +20,7 @@ var platforms;
 var enemyAnimation;
 var bagCoins;
 
+
 var isLeft;
 var isRight;
 var isFalling;
@@ -77,7 +78,7 @@ function preload()
     enemyAnimation = loadAnimation('assets/asterisk_circle0006.png', 'assets/asterisk_circle0008.png');
     
     // bagCoins = loadImage('assets/picture.gif');
-    bagCoins = loadGif('assets/picture.gif');
+    bagCoins = loadGif('assets/bagcoins.gif');
 
 }
 
@@ -94,29 +95,28 @@ function setup()
 	gameChar_x = width/2;
 	gameChar_y = floorPos_y;
     
-    //lives
-    lives = 3; 
-    level = 0;
-
-    fade = 0; 
-
-    // setTimeout(textLevel(), 2000);    
-    // image(bagCoins,800,floorPos_y);
-    //setTimeout(textLevel, 3000);
-
+    lives = 3; // lives
+    level = 0; // level
 
     startGame(); 
 }
 
-// function textLevel()
-// {
+function gameInstructions()
+{
+    elapsedTime = millis() - startTime;
+    if(elapsedTime < 3000 )
+    {  
+        noStroke();
+        fill(0,0,139);
+        textSize(30);
+        textFont("Comic Sans MS");
+        text('Game instructions : ' , 400,100);
+        text('Help the char to find the bag of coins ' , 300,150);
+        text('Be aware of hungry ennemies and canyons ' , 300,200);
+        text('Press space bar to start ' , 300,250);
 
-//         fill(255,255,0);
-//         noStroke();
-//         textSize(40);
-//         text('LEVEL 1 COMPLETED');
-
-// }
+    }
+}
 
 
 function startGame()
@@ -397,17 +397,7 @@ function startGame()
     
     //add an end to the level
     flagpole = {isReached: false, x_pos: 5200}; 
-    //add an end to the game 
 
-    
-    // image(bagCoins,8900,floorPos_y);
-
-    // loadImage('assets/bagofcoins.png', img => {
-    //     image(img, 680, floorPos_y-20);
-    //   });
-
-    //flagpole = {isReached: false, x_pos: 8900}; 
-  
     gameOver(); 
 }
 
@@ -418,17 +408,15 @@ function draw()
 	noStroke();
 	fill(0,155,0);
 	rect(0, floorPos_y, width, height/4); // to draw green ground
-    
-    push();
-    
-    translate(scrollPos,0);
 
+    push();  
+    translate(scrollPos,0);
 	// draw mountains
     drawMountains();
     // Draw canyons
     for(var i = 0; i< canyons.length; i++)
     { 
-          if(gameChar_world_x > canyons[i].xPos && gameChar_world_x <(canyons[i].xPos + canyons[i].width) && gameChar_y >= floorPos_y)
+          if(gameChar_world_x > canyons[i].xPos && gameChar_world_x <(canyons[i].xPos + canyons[i].width)  && gameChar_y >= floorPos_y )
               {
                   checkCanyon(canyons[i]);    
               }
@@ -465,44 +453,35 @@ function draw()
 
     
     for(var i=0; i<enemies.length; i++)
+        {
+            enemies[i].draw();
+            
+            var isContact = enemies[i].checkContact(gameChar_world_x,gameChar_y);
+            if(isContact)
             {
-                enemies[i].draw();
-                
-                var isContact = enemies[i].checkContact(gameChar_world_x,gameChar_y);
-                if(isContact)
-                    {
-                        if(lives >0)
-                            {
-                                lives--
-                                backgroundSound.stop();
-                                failureSound.play(); 
-                                startGame();
-                                break;
-                            }
-                    }
-                
+            if(lives >0)
+                {
+                    lives--
+                    backgroundSound.stop();
+                    failureSound.play(); 
+                    startGame();
+                    break;
+                }
             }
+            
+        }
     
     image(bagCoins,9500,floorPos_y-45);
     
-    // if(flagpole.isReached)
-    // {
-    //     debugger
-    //     elapsedTimesinceflag = millis() - flagReachedTime;
-    //     if(elapsedTimesinceflag < 5000 ){
-    //         textSize(40);
-    //         text('SALIM' , scrollPos + 100,200);
-    //     }
-    // }
-
-
-   
+    //endOfGame();
 
     renderFlagpole();
     checkPlayerDie();
-    
+    //gameInstructions();
+
     pop(); 
     
+
 
     // Draw game character.
 	drawGameChar();
@@ -540,14 +519,13 @@ function draw()
     textFont("Comic Sans MS");
     textSize(20);
     text('score: ' + game_score, 700,40);
-    
-    //lives
+    //lives counter
     fill(0, 0, 139); 
     noStroke(2);
     textFont("Comic Sans MS");
     textSize(20);
     text('lives: ' + lives, 850,40);
-
+    //level counter
     fill(0, 0, 139); 
     noStroke(2);
     textFont("Comic Sans MS");
@@ -559,7 +537,6 @@ function draw()
             checkPlayerDie;
         }
 
-     
     if(lives == 0 )
         {
             fill(0, 0, 139); 
@@ -570,7 +547,7 @@ function draw()
             text('Refresh the page to start again',300,250);
             
         }
-    
+
     
     
 	// Logic to make the game character move or the background scroll
@@ -658,17 +635,17 @@ function keyPressed()
                     jumpSound.play();
                 }
         }
-    if(keyCode == 32)
-         {
-             if(flagpole.isReached)
-             {
-                 return true;
-             }
-             else
-             {
-                 return false;
-             }
-         }
+    // if(keyCode == 32)
+    //      {
+    //          if(flagpole.isReached)
+    //          {
+    //              return true;
+    //          }
+    //          else
+    //          {
+    //              return false;
+    //          }
+    //      }
     
     if(allowJump)
         {
@@ -1042,8 +1019,8 @@ function renderFlagpole()
     if(flagpole.isReached)
         {
             rect(flagpole.x_pos,floorPos_y-250,50,50);
-            level =1;
-            // textLevel();
+            level = 1;
+           
         }
     else
         {
@@ -1061,7 +1038,6 @@ function checkFlagpole()
       {
         
         flagpole.isReached = true;
-        flagReachedTime = millis();
 
         //backgroundSound.pause();
         levelSound.playMode('restart');
@@ -1069,7 +1045,6 @@ function checkFlagpole()
         
         //backgroundSound.play();
       }
-    //   else if(gameChar_world_x > flagpole.x_pos)
     //   {
     //     textLevel();
     //     backgroundSound.play();
@@ -1088,14 +1063,7 @@ function checkPlayerDie()
         }  
 }
 
-function gameOver()
-{
-    if(lives == 0)
-        {  
-            backgroundSound.pause();
-            gameoverSound.play();
-        }
-}
+
 
 function createPlatforms(x,y,length)
 {
@@ -1182,6 +1150,34 @@ function createEnemy(x, y, range)
     }
        
 }
+
+function gameOver()
+{
+
+    if(lives == 0)
+        {  
+            backgroundSound.pause();
+            gameoverSound.play();
+        }
+}
+
+// function endOfGame()
+// {
+//     var d = dist(gameChar_world_x,gameChar_y,9500,floorPos_y-45)
+//     console.log(d);
+//   if(d <= 50)
+//   {
+
+//       bagCoins.isFound = true; 
+//       noStroke();
+//       fill(0);
+//       textSize(40);
+//       text(' CONGRATULATIONS  ' , 400,200);
+
+
+//   }
+    
+// }
 
 
 
