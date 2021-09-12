@@ -36,6 +36,8 @@ var flagpole;
 var lives; 
 var level;
 
+
+//var startTime;
 var firstGameStartTime;
 var elapsedTime;
 var elapsedTimesinceflag;
@@ -82,6 +84,9 @@ function setup()
     lives = 3; // lives
     level = 0; // level
 
+
+
+
     startGame(); 
 }
 //background sound
@@ -114,6 +119,7 @@ function startGame()
     backgroundSound = loadSound('assets/background.wav',sceneSound);
     
     treePos_y = height/2;
+    
 
     RDS = random(280, 650); //for sun glow 
 	// Variable to control the background scrolling.
@@ -458,9 +464,13 @@ function draw()
 
     renderFlagpole();
     checkPlayerDie();
+
+
     pop(); 
     gameInstructions(); // game instructions text
-	drawGameChar(); // to draw game character 
+
+
+    drawGameChar(); // to draw game character 
     //score counter
     fill(0, 0, 139); 
     noStroke(2);
