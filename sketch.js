@@ -476,13 +476,14 @@ function draw()
                 
             }
     
-    image(bagCoins,550,floorPos_y-45);
+    image(bagCoins,9500,floorPos_y-45);
+    
     renderFlagpole();
     checkPlayerDie();
+    
     pop(); 
     
 
-    // bagCoins.position(550,floorPos_y-20);
     // Draw game character.
 	drawGameChar();
 
