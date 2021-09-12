@@ -35,12 +35,7 @@ var game_score;
 var flagpole; 
 var lives; 
 var level;
-/////////
-var fade;
-var fadeAmount = 1;
-let speed = 1; 
-let ts = 50;
-///////////
+
 var startTime;
 var elapsedTime;
 var elapsedTimesinceflag;
@@ -58,35 +53,23 @@ function preload()
 {
     //load the sounds 
     soundFormats('wav');
-
     jumpSound = loadSound('assets/jump.wav');
-    jumpSound.setVolume(0.1);
-    
+    jumpSound.setVolume(0.1);  
     collecteSound = loadSound('assets/coin.wav');
-    collecteSound.setVolume(0.1);
-    
+    collecteSound.setVolume(0.1);  
     failureSound = loadSound('assets/failure.wav');
-    failureSound.setVolume(0.2);
-    
+    failureSound.setVolume(0.2);  
     gameoverSound = loadSound('assets/gameover.wav');
     gameoverSound.setVolume(0.2);
-
     levelSound = loadSound('assets/levelup.wav');
     levelSound.setVolume(0.1);  
     
     //load images
     enemyAnimation = loadAnimation('assets/asterisk_circle0006.png', 'assets/asterisk_circle0008.png');
-    
-    // bagCoins = loadImage('assets/picture.gif');
     bagCoins = loadGif('assets/bagcoins.gif');
 
 }
 
-function sceneSound()
-{
-    backgroundSound.setVolume(0.09);
-    backgroundSound.loop();
-}
 
 function setup()
 {
@@ -100,7 +83,13 @@ function setup()
 
     startGame(); 
 }
-
+//background sound
+function sceneSound()
+{
+    backgroundSound.setVolume(0.09);
+    backgroundSound.loop();
+}
+// game instructions 
 function gameInstructions()
 {
     elapsedTime = millis() - startTime;
@@ -125,13 +114,11 @@ function startGame()
     
     treePos_y = height/2;
 
-    RDS = random(280, 650);
+    RDS = random(280, 650); //for sun glow 
 	// Variable to control the background scrolling.
 	scrollPos = 0;
-
 	// Variable to store the real position of the gameChar in the game world. Needed for collision detection.
 	gameChar_world_x = gameChar_x - scrollPos;
-
 	// Boolean variables to control the movement of the game character.
 	isLeft = false;
 	isRight = false;
@@ -140,7 +127,6 @@ function startGame()
     isContact = false;
     allowJump = false;
     isFound =false;
-
 	// Initialise arrays of scenery objects.
     sun =[ {
            x:400,
@@ -392,9 +378,7 @@ function startGame()
     enemies.push(new createEnemy(8700,floorPos_y-30,150)); 
 
     game_score = 0;
-
-    startTime = millis();
-    
+    startTime = millis();  
     //add an end to the level
     flagpole = {isReached: false, x_pos: 5200}; 
 
@@ -411,9 +395,8 @@ function draw()
 
     push();  
     translate(scrollPos,0);
-	// draw mountains
-    drawMountains();
-    // Draw canyons
+    drawMountains(); // to draw mounains
+    // Draw canyons and check if character fell over the canyon
     for(var i = 0; i< canyons.length; i++)
     { 
           if(gameChar_world_x > canyons[i].xPos && gameChar_world_x <(canyons[i].xPos + canyons[i].width)  && gameChar_y >= floorPos_y )
@@ -424,12 +407,9 @@ function draw()
       
     }
 
-    drawSun();
-	// draw clouds
-    drawClouds();
-    // Draw trees
-    drawTrees();
-
+    drawSun(); //to draw sun
+    drawClouds(); //to draw clouds 
+    drawTrees(); //to draw trees
     //Draw platforms
     for(var i=0;i< platforms.length; i++ )
         {
@@ -445,17 +425,16 @@ function draw()
                 }
             
     }
+    // check if character rechead the flagpole 
+    if(!checkFlagpole.isReached)
+        {
+            checkFlagpole();
+        }
 
-     if(!checkFlagpole.isReached)
-            {
-                checkFlagpole();
-            }
-
-    
+    // check if character touch the enemy and decrease lives by 1
     for(var i=0; i<enemies.length; i++)
         {
-            enemies[i].draw();
-            
+            enemies[i].draw();         
             var isContact = enemies[i].checkContact(gameChar_world_x,gameChar_y);
             if(isContact)
             {
@@ -471,48 +450,13 @@ function draw()
             
         }
     
-    image(bagCoins,9500,floorPos_y-45);
-    
-    //endOfGame();
+    image(bagCoins,9500,floorPos_y-45); //to draw the bag coins  
 
     renderFlagpole();
     checkPlayerDie();
-    //gameInstructions();
-
     pop(); 
-    
-
-
-    // Draw game character.
-	drawGameChar();
-
-    // if(flagpole.isReached) 
-    // {
-    //     fill(0, 0, 139); 
-    //     noStroke();
-    //     textSize(40);
-    //     // startTime = millis(1000);
-    //     // elapsedTime = millis(1000) - startTime;
-    //     // if (elapsedTime < [2000]) { print "" Level 1 completed ! " }
-    //     // fill(0, 0, 139); 
-    //     // noStroke();
-    //     // textSize(40);
-    //     textFont("Comic Sans MS");
-    //     text("Level 1 completed ! ", 200,150);
-    //     noLoop();
-    //     setTimeout(function() {loop();}, 2000);
-    //    }
-       
-    // //textLevel();
-    // if(flagpole.isReached)
-    // {
-    //     //noLoop();
-    //    let timer =  setTimeout(textLevel, 0);
-    //    clearTimeout(timer);
-           
-    // }
-    
-    
+    gameInstructions(); // game instructions text
+	drawGameChar(); // to draw game character 
     //score counter
     fill(0, 0, 139); 
     noStroke(2);
@@ -547,22 +491,19 @@ function draw()
             text('Refresh the page to start again',300,250);
             
         }
-
-    
-    
+ 
 	// Logic to make the game character move or the background scroll
 	if(isLeft)
 	{
 		if(gameChar_x > width * 0.2)
 		{
-			gameChar_x -= 5; //5
+			gameChar_x -= 5; 
 		}
 		else
 		{
 			scrollPos += 5;
 		}
 	}
-
 	if(isRight)
 	{
 		if(gameChar_x < width * 0.8)
@@ -575,8 +516,7 @@ function draw()
 		}
 	}
 
-	// Logic to make the game character rise and fall.
-    
+	// Logic to make the game character rise and fall. 
     if (gameChar_y < floorPos_y) 
     {
       for(var i=0; i<platforms.length; i++)
@@ -586,6 +526,7 @@ function draw()
                     {
                         isFalling = false;
                         allowJump = true;
+
                         break;
                     }
                 
@@ -604,24 +545,24 @@ function draw()
     
     if(isPlummeting)
     {
-        gameChar_y += 5 ; //5
-    }
-    
+        gameChar_y += 5 ; 
+    }    
 	//real position of gameChar in game world.
 	gameChar_world_x = gameChar_x - scrollPos;
 
+  
+   
+
 }
 
-// ---------------------
 // Key control functions
-// ---------------------
 
 function keyPressed()
 {
     
     if( keyCode ==37)
         {
-            isLeft=true;
+            isLeft=true; 
         }
     else if( keyCode == 39)
         {
@@ -631,26 +572,29 @@ function keyPressed()
         {
             if(!isFalling)
                 {
-                    gameChar_y -= 120; //150
+                    gameChar_y -= 120; 
                     jumpSound.play();
                 }
         }
-    // if(keyCode == 32)
-    //      {
-    //          if(flagpole.isReached)
-    //          {
-    //              return true;
-    //          }
-    //          else
-    //          {
-    //              return false;
-    //          }
-    //      }
+    if(keyCode == 32)
+    {
+        if(flagpole.isReached)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     
     if(allowJump)
         {
             isFalling = true;
         }
+    
 
 }
 
@@ -928,8 +872,7 @@ function drawMountains()
         triangle(m.x-100,m.y,m.x-60,m.y-176,m.x+200,m.y);
         triangle(m.x-400,m.y,m.x-160,m.y-156,m.x+100,m.y);
     }
-    
-    
+  
 }
 
 // Function to draw trees objects.
@@ -945,9 +888,7 @@ function drawTrees()
         triangle(t -60,treePos_y+47, t +20,treePos_y-61, t +90,treePos_y+49);
         triangle(t -60,treePos_y+7,t +20,treePos_y-101,t +90,treePos_y+9);
         triangle(t -60,treePos_y-33,t +20,treePos_y-141,t +90,treePos_y-31);
-
-    }   
-    
+    }       
 }
 
 // Function to draw canyon objects.
@@ -956,9 +897,6 @@ function drawCanyon(t_canyon)
     noStroke(); 
     fill(135, 206, 235);
     rect(t_canyon.xPos, t_canyon.yPos,t_canyon.width, t_canyon.height);
-//    fill(139, 69, 19);
-//    rect(t_canyon.xPos,t_canyon.yPos,t_canyon.width -90,t_canyon.height);
-//    rect(t_canyon.xPos +100,t_canyon.yPos,t_canyon.width -90,t_canyon.height); 
 }
 
 // Function to check if character is over a canyon.
@@ -1030,26 +968,17 @@ function renderFlagpole()
     pop();
 }
 
-// function to check the distance of the game char from flagpole
+// function to check the distance of the game character from flagpole
 function checkFlagpole()
 {
     var d = abs(gameChar_world_x - flagpole.x_pos);   
-    if( d < 4) //15 //9
+    if( d < 4) 
       {
         
         flagpole.isReached = true;
-
-        //backgroundSound.pause();
         levelSound.playMode('restart');
         levelSound.play();
-        
-        //backgroundSound.play();
       }
-    //   {
-    //     textLevel();
-    //     backgroundSound.play();
-    //   }
-   
 }
 
 // each time the game char fall down a canyon the game reset and their remaining lives decrement by one.
@@ -1064,7 +993,7 @@ function checkPlayerDie()
 }
 
 
-
+// function to create platforms 
 function createPlatforms(x,y,length)
 {
     var v = {
@@ -1093,17 +1022,14 @@ function createPlatforms(x,y,length)
                                {
                                    return true;
                                }
-
                        }
                    return false;
-
-
                },
     }
     return v;
-
 }
 
+//function to create ennemies 
 function createEnemy(x, y, range)
 {
     this.x = x;
@@ -1129,20 +1055,14 @@ function createEnemy(x, y, range)
     this.draw = function()
     {
         this.update();
-
-        // asterisk = createSprite(this.currentX, this.y,40,40);
-        
         animation(enemyAnimation,this.currentX,this.y);
-        //asterisk.addAnimation('round', 'assets/asterisk_circle0006.png', 'assets/asterisk_circle0008.png');
-      
-
     }
  
     this.checkContact = function(gc_x,gc_y)
     {
         var d = dist(gc_x,gc_y,this.currentX,this.y)
         
-        if(d < 48) //20 //40
+        if(d < 48) 
             {
                 return true;
             }
@@ -1151,6 +1071,7 @@ function createEnemy(x, y, range)
        
 }
 
+// function to control game over sound 
 function gameOver()
 {
 
