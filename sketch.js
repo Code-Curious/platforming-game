@@ -75,16 +75,6 @@ function preload()
     // bagCoins = loadImage('assets/picture.gif');
     bagCoins = loadGif('assets/picture.gif');
 
-
-
-
-
-
-
-    
-
-
-    
 }
 
 function sceneSound()
@@ -444,6 +434,7 @@ function draw()
     drawClouds();
     // Draw trees
     drawTrees();
+
     //Draw platforms
     for(var i=0;i< platforms.length; i++ )
         {
@@ -485,12 +476,11 @@ function draw()
                 
             }
     
- 
+    image(bagCoins,550,floorPos_y-45);
     renderFlagpole();
     checkPlayerDie();
     pop(); 
     
-    image(bagCoins,550,floorPos_y-45);
 
     // bagCoins.position(550,floorPos_y-20);
     // Draw game character.
